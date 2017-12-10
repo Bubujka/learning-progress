@@ -7,6 +7,7 @@ import datetime
 import re
 import json
 import os.path
+import functools
 from csv import DictReader
 from urllib.parse import urlparse
 
@@ -16,9 +17,7 @@ from colorama import Fore, Style
 
 urllib3.disable_warnings()
 
-CFG = json.loads(open(os.path.expanduser('~/.db/wiki/learning-progress-config.json')).read())
-BASE_URL = CFG['base_url']
-PAGES = CFG['pages']
+CONFIG_FILE = os.path.expanduser('~/.db/wiki/learning-progress-config.json')
 
 class Chunk():
     """Фрагмент знаний"""
@@ -56,7 +55,7 @@ class Chunk():
 
 def url(gid):
     """Получить ссылку на страницу по gid"""
-    return BASE_URL.format(gid)
+    return config()['base_url'].format(gid)
 
 
 def parse_date(datestr):
@@ -73,7 +72,7 @@ def url_to_dictreader(turl):
 def get_full_learning_log():
     """Получить всю историю обучения"""
     log = []
-    for name, gid in PAGES.items():
+    for name, gid in config()['pages'].items():
         for row in url_to_dictreader(url(gid)):
             if len(row['Изучил'].strip()) and len(row['Что'].strip()):
                 try:
@@ -119,5 +118,18 @@ def format_raw_list(items):
             prev_date = itm.readed
         itm.print()
 
+def check_config():
+    """Проверка что есть файл настроек в системе"""
+    if not os.path.exists(CONFIG_FILE):
+        print("Файл с настройками ({}) не существует".format(CONFIG_FILE))
+        exit(1)
+
+
+@functools.lru_cache()
+def config():
+    """Получить данные из конфига"""
+    return json.loads(open(CONFIG_FILE).read())
+
 if __name__ == '__main__':
+    check_config()
     cli()
