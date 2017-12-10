@@ -77,9 +77,9 @@ def get_full_learning_log():
             if len(row['Изучил'].strip()) and len(row['Что'].strip()):
                 try:
                     log.append(Chunk(row, name))
-                except Exception as e:
+                except Exception as err:
                     print("Ошибка в разделе {}", name)
-                    raise e
+                    raise err
 
 
     return sorted(log, key=lambda i: i.readed)
