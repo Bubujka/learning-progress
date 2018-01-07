@@ -17,7 +17,7 @@ from colorama import Fore, Style
 
 urllib3.disable_warnings()
 
-CONFIG_FILE = os.path.expanduser('~/.db/wiki/learning-progress-config.json')
+CONFIG_FILE = os.environ.get('LEARNING_PROGRESS_CONFIG', os.path.expanduser('~/.db/wiki/learning-progress-config.json'))
 
 class Chunk():
     """Фрагмент знаний"""
