@@ -95,7 +95,7 @@ def cli():
 def last_days():
     """Сделать всё"""
     log_sorted = get_full_learning_log()
-    format_raw_list(list(log_sorted)[-30:])
+    format_raw_list(reversed(list(log_sorted)[-30:]))
 
 @cli.command()
 def full_log():
